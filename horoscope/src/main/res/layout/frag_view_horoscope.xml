@@ -3,11 +3,21 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffdbdbdb">
+    android:background="#ffe4e4e4">
 
+    <!--loading section -->
+    <ProgressBar
+        android:id="@+id/scope_loading"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <!--scroll section -->
     <ScrollView
+        android:id="@+id/section_scroll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -21,11 +31,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <TextView
-                    android:text="@string/vwh_date_lbl"
-                    android:textSize="25sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
 
                 <EditText
                     android:id="@+id/vwh_date_txt"

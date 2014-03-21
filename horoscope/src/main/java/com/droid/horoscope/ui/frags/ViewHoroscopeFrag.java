@@ -6,9 +6,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.droid.horoscope.R;
+
+import org.w3c.dom.Text;
 
 /**
  * Created by james on 21/03/14.
@@ -20,7 +25,14 @@ public class ViewHoroscopeFrag extends Fragment {
 
     private int horoscope;
     private String[] horoscopeList;
-    private TextView horoscope_name;
+
+    private ProgressBar scope_loading;
+    private TextView scope_date_txt;
+    private ImageView vwh_img_thumbnail;
+    private TextView vwh_horoscope_name;
+    private TextView vwh_bday_txt;
+    private TextView vwh_horoscope_txt;
+    private Button btn_read_more;
 
     public ViewHoroscopeFrag(int horoscope) {
         this.horoscope = horoscope;
@@ -37,6 +49,14 @@ public class ViewHoroscopeFrag extends Fragment {
         View rootView = inflater.inflate(R.layout.frag_view_horoscope, container, false);
 
         //init ui here
+        scope_loading = (ProgressBar)rootView.findViewById(R.id.scope_loading);
+        scope_date_txt = (TextView)rootView.findViewById(R.id.vwh_date_txt);
+        vwh_img_thumbnail = (ImageView)rootView.findViewById(R.id.vwh_img_thumbnail);
+        vwh_horoscope_name = (TextView)rootView.findViewById(R.id.vwh_horoscope_name);
+        vwh_bday_txt = (TextView)rootView.findViewById(R.id.vwh_bday_txt);
+        vwh_horoscope_txt = (TextView)rootView.findViewById(R.id.vwh_horoscope_txt);
+        btn_read_more = (Button)rootView.findViewById(R.id.btn_read_more);
+
         return rootView;
     }
 
