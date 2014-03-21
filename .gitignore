@@ -1,0 +1,11 @@
+#gradle working directories
+.gradle
+
+#project properties
+/local.properties
+
+#ide project workspace setting
+/.idea/workspace.xml
+
+#windows digital store
+.DS_Store
