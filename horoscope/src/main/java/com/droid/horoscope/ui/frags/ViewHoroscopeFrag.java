@@ -1,6 +1,8 @@
 package com.droid.horoscope.ui.frags;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -13,7 +15,6 @@ import android.widget.TextView;
 
 import com.droid.horoscope.R;
 
-import org.w3c.dom.Text;
 
 /**
  * Created by james on 21/03/14.
@@ -56,7 +57,7 @@ public class ViewHoroscopeFrag extends Fragment {
         vwh_bday_txt = (TextView)rootView.findViewById(R.id.vwh_bday_txt);
         vwh_horoscope_txt = (TextView)rootView.findViewById(R.id.vwh_horoscope_txt);
         btn_read_more = (Button)rootView.findViewById(R.id.btn_read_more);
-
+        btn_read_more.setOnClickListener(btnListener);
         return rootView;
     }
 
@@ -89,4 +90,20 @@ public class ViewHoroscopeFrag extends Fragment {
     public void onSaveInstanceState(Bundle outState){
         super.onSaveInstanceState(outState);
     }
+
+    public View.OnClickListener btnListener =  new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()){
+                case R.id.btn_read_more: //open browser
+                    String url = "http://www.findyourfate.com/rss/daily-horoscopes-today.asp?sign=Aries";
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity(intent);
+                    break;
+
+                default:break;
+            }
+        }
+    };
+
 }
