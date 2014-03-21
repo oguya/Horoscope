@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Horoscope</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- nav drawer string -->
+    <string name="drawer_open">Menu Open</string>
+    <string name="drawer_close">Menu Close</string>
+    <string name="drawer_title">Horoscopes</string>
+
+    <!-- nav drawer menu items -->
+    <string-array name="nav_drawer_items">
+        <item>Aries</item>
+        <item>Taurus</item>
+        <item>Gemini</item>
+        <item>Cancer</item>
+        <item>Leo</item>
+        <item>Virgo</item>
+        <item>Libra</item>
+        <item>Scorpio</item>
+        <item>Sagittarius</item>
+        <item>Capricorn</item>
+        <item>Aquarius</item>
+        <item>Pisces</item>
+    </string-array>
+
+    <!-- drawer item icons -->
+    <string-array name="nav_drawer_icons">
+        <item>@drawable/aries</item>
+        <item>@drawable/taurus</item>
+        <item>@drawable/gemini</item>
+        <item>@drawable/cancer</item>
+        <item>@drawable/leo</item>
+        <item>@drawable/virgo</item>
+        <item>@drawable/libra</item>
+        <item>@drawable/scorpio</item>
+        <item>@drawable/sagittarius</item>
+        <item>@drawable/capricorn</item>
+        <item>@drawable/aquarius</item>
+        <item>@drawable/pisces</item>
+    </string-array>
+
+    <!-- img content desc -->
+    <string name="img_content_desc">Image</string>
+
+</resources>
