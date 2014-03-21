@@ -264,9 +264,6 @@ public class MainActivity extends ActionBarActivity {
         super.onResume();
         dbAdapter.open();
 
-        if(fragPosition != -1){
-            displayDrawerView(fragPosition);
-        }
     }
 
     public void onSaveInstanceState(Bundle outState){
