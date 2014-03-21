@@ -1,8 +1,10 @@
 package com.droid.horoscope.ui;
 
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -21,8 +23,10 @@ import android.widget.Toast;
 import com.droid.horoscope.R;
 import com.droid.horoscope.adapters.NavDrawerListAdapter;
 import com.droid.horoscope.constants.Constants;
+import com.droid.horoscope.db.DBAdapter;
 import com.droid.horoscope.model.NavDrawerItem;
 import com.droid.horoscope.ui.frags.ViewHoroscopeFrag;
+import com.droid.horoscope.utils.FirstRunInit;
 
 import java.util.ArrayList;
 
@@ -43,14 +47,23 @@ public class MainActivity extends ActionBarActivity {
     private NavDrawerListAdapter drawerListAdapter;
     private int fragPosition = -1;
 
+    private FirstRunInit firstRunInit;
+    private DBAdapter dbAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //check first run
+        checkFirstRun();
+
         actionBar = getSupportActionBar();
 
         prepDrawerMenu();
+
+        dbAdapter = new DBAdapter(this);
+        dbAdapter.open();
 
         //check for saved instances..orientation changes
         if(savedInstanceState == null){ //default view
@@ -244,10 +257,12 @@ public class MainActivity extends ActionBarActivity {
 
     public void onPause(){
         super.onPause();
+        dbAdapter.close();
     }
 
     public void onResume(){
         super.onResume();
+        dbAdapter.open();
 
         if(fragPosition != -1){
             displayDrawerView(fragPosition);
@@ -264,5 +279,20 @@ public class MainActivity extends ActionBarActivity {
         super.onRestoreInstanceState(savedInstanceState);
     }
 
+    private void checkFirstRun(){
+        SharedPreferences firstRunPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean firstRun = firstRunPrefs.getBoolean("FirstRunInit", true);
+
+        if(firstRun){
+            //copy db
+            Log.e(LOG_TAG, "First Run! initializing resources...");
+            firstRunInit = new FirstRunInit(this);
+            firstRunInit.copyDBFile();
+
+            firstRunPrefs.edit().putBoolean("FirstRunInit", false).commit();
+        }else{
+            Log.e(LOG_TAG, "First Run! all assets GREEN...");
+        }
+    }
 
 }
