@@ -9,6 +9,9 @@
     <color name="counter_text_bg">#626262</color>
     <color name="counter_text_color">#c5c4c4</color>
 
-
+    <!--button colors-->
+    <color name="btn_background">#ffb0ff83</color>
+    <color name="btn_background_pressed">#ffb0ff83</color>
+    <color name="btn_stroke_pressed">#ffff0000</color>
 
 </resources>

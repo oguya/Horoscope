@@ -3,14 +3,154 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ff29ff52">
+    android:background="#ffdbdbdb">
 
-    <TextView
-        android:id="@+id/horoscope_name"
-        android:layout_centerInParent="true"
-        android:text="View Horoscope"
-        android:textSize="30sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!--date section-->
+            <LinearLayout
+                android:id="@+id/section_horoscope_date"
+                android:padding="10dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:text="@string/vwh_date_lbl"
+                    android:textSize="25sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <EditText
+                    android:id="@+id/vwh_date_txt"
+                    android:textSize="23sp"
+                    android:text="@string/vwh_date_txt"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:editable="false"
+                    android:layout_marginLeft="5dp"/>
+
+            </LinearLayout>
+
+            <!--horoscope img & details section -->
+            <RelativeLayout
+                android:id="@+id/section_horoscope_details"
+                android:layout_below="@id/section_horoscope_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/vwh_img_thumbnail"
+                    android:src="@drawable/sagittarius"
+                    android:contentDescription="@string/img_content_desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:scaleType="fitCenter"
+                    android:adjustViewBounds="true"
+                    android:minHeight="250dp"
+                    android:minWidth="250dp"
+                    android:maxHeight="300dp"
+                    android:maxWidth="300dp"
+                    android:layout_margin="10dp"
+                    android:layout_alignParentTop="true" />
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:alpha=".6"
+                    android:background="#ffadd8fc"
+                    android:layout_marginLeft="-10dp"
+                    android:layout_marginRight="-20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_alignBottom="@id/vwh_img_thumbnail"
+                    android:layout_alignRight="@id/vwh_img_thumbnail"
+                    android:layout_alignEnd="@id/vwh_img_thumbnail">
+
+                    <TextView
+                        android:id="@+id/vwh_horoscope_name"
+                        android:text="@string/vwh_horoscope_lbl"
+                        android:textColor="@android:color/black"
+                        android:layout_marginLeft="20dp"
+                        android:textSize="25sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/vwh_bday_txt"
+                        android:text="@string/vwh_bday_lbl"
+                        android:textColor="@android:color/black"
+                        android:layout_marginLeft="20dp"
+                        android:textSize="20sp"
+                        android:textStyle="italic"
+                        android:gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <!-- section horoscope text -->
+            <LinearLayout
+                android:orientation="vertical"
+                android:id="@+id/section_extras"
+                android:layout_margin="10dp"
+                android:layout_below="@id/section_horoscope_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/section_bg">
+
+                <TextView
+                    android:id="@+id/vwh_horoscope_txt"
+                    android:text="@string/vwh_horoscope_txt"
+                    android:textSize="20sp"
+                    android:textIsSelectable="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+
+            <!--section footer::readMore-->
+            <Button
+                android:id="@+id/btn_read_more"
+                android:text="@string/btn_read_more_lbl"
+                android:background="@drawable/btn_bg"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/section_extras"
+                android:layout_marginTop="5dp"
+                android:layout_centerHorizontal="true"/>
+
+            <!--footer section-->
+            <TextView
+                android:text="@string/disclaimer"
+                android:textSize="15sp"
+                android:layout_marginTop="20dp"
+                android:paddingBottom="5dp"
+                android:fontFamily="monospace"
+                android:linksClickable="true"
+                android:autoLink="web"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/btn_read_more"
+                android:layout_alignParentBottom="true"/>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+
+
 
 </RelativeLayout>

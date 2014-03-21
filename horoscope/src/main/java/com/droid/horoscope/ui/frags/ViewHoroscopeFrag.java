@@ -37,7 +37,6 @@ public class ViewHoroscopeFrag extends Fragment {
         View rootView = inflater.inflate(R.layout.frag_view_horoscope, container, false);
 
         //init ui here
-        horoscope_name = (TextView)rootView.findViewById(R.id.horoscope_name);
         return rootView;
     }
 
@@ -54,7 +53,6 @@ public class ViewHoroscopeFrag extends Fragment {
 
         horoscopeList = activity.getResources().getStringArray(R.array.nav_drawer_items);
 
-        horoscope_name.setText(horoscopeList[horoscope]);
     }
 
     @Override

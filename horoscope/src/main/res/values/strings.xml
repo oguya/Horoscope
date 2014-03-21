@@ -45,4 +45,13 @@
     <!-- img content desc -->
     <string name="img_content_desc">Image</string>
 
+    <!--view horoscope frag-->
+    <string name="vwh_date_lbl">Date</string>
+    <string name="vwh_date_txt">Friday, 21 March, 2014</string>
+    <string name="vwh_horoscope_lbl">Aries</string>
+    <string name="vwh_bday_lbl">March 21 - April 19</string>
+    <string name="vwh_horoscope_txt">Life exceeds your dreams later today. At the moment there`s no difference between who you are and what you want. Luckily for you, intense desires are likely to be fulfilled. The question is whether you`ll be satisfied or if you`ll still want more. Resist the temptation to be greedier than is necessary. If you have the world, don`t ask for the Universe. Try spreading a bit of your wealth around, Taurus.</string>
+    <string name="btn_read_more_lbl">Read More</string>
+    <string name="disclaimer">Horoscopes provided by www.findyourfate.com</string>
+
 </resources>
