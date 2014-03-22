@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,19 +48,68 @@ public class Utils {
         return new BitmapDrawable(context.getResources(), Bitmap.createScaledBitmap(bitmap, width, height, true));
     }
 
-    //return date in format => 2014-03-22
-    public static String formatDate(String dateStr){
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String retDate = "";
-        Date date = null;
+    //return date in format => 2014-03-21 OR Friday, 21 March, 2014
 
-        try {
-            date = dateFormat.parse(dateStr);
-            retDate = dateFormat.format(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
+    public static String formatDate(int dateType, String dbDateStr){
+        SimpleDateFormat dateFormat ;
+        Date now = new Date();
+        Date horoscopeDate;
+        String dateStr = "";
+
+        switch (dateType){
+            case 0: //db date => 2014-03-21
+                dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                break;
+
+            case 1: //display date => Friday, 21 March, 2014
+                dateFormat = new SimpleDateFormat("EEEE dd, MMM, yyyy");
+                break;
+
+            default:
+                dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                break;
         }
+        try {
+            if(dbDateStr != null){
+                horoscopeDate = dateFormat.parse(dbDateStr);
+                dateStr = dateFormat.format(horoscopeDate);
+            }else{
+                dateStr = dateFormat.format(now);
+            }
+        } catch (ParseException e) {
+            Log.e("Utils", "exception in dateParse: "+e.getMessage());
+        }
+        return dateStr;
+    }
 
-        return retDate;
+    //return current date 2014-03-22
+    public static String formatCurrentDate(){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date now = new Date();
+        return dateFormat.format(now);
+    }
+
+    //return Friday, 21 March, 2014
+    public static String formatDisplayDate(String strDate){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE dd, MMMM, yyyy");
+        SimpleDateFormat horoscopeDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date now = new Date();
+        Date horoscopeDate;
+        String dispDateStr = "";
+        try {
+            horoscopeDate = horoscopeDateFormat.parse(strDate);
+
+            if(horoscopeDate.getYear() != now.getYear()){
+                dateFormat = new SimpleDateFormat("EEEE dd, MMM yyyy");
+                dispDateStr = dateFormat.format(horoscopeDate);
+            }else{
+                dispDateStr = dateFormat.format(horoscopeDate);
+            }
+
+        } catch (ParseException e) {
+            Log.e("Utils", "exception in dateParse: "+e.getMessage());
+            dispDateStr = dateFormat.format(now);
+        }
+        return dispDateStr;
     }
 }

@@ -131,6 +131,37 @@ public class DBAdapter {
         return horoscopeTextList;
     }
 
+    //get latest horoscope...assuming no net conn.
+    public ArrayList<HoroscopeText> getLatestHoroscopeText(int horoscopeID){
+        ArrayList<HoroscopeText> horoscopeTextList = new ArrayList<HoroscopeText>();
+        Cursor cursor;
+        String sql = "SELECT text_id, horoscope_id, text_date, text, text_url " +
+                "FROM horoscope_text WHERE horoscope_id = "+horoscopeID+" ORDER BY text_date DESC";
+
+        try {
+            cursor = db.rawQuery(sql, null);
+        }catch (SQLiteException ex){
+            Log.e(LOG_TAG, "exception "+ex.getMessage());
+            return horoscopeTextList;
+        }
+
+        if(cursor.moveToFirst()){
+            do{
+                HoroscopeText horoscopeText = new HoroscopeText();
+
+                horoscopeText.setTextID(cursor.getInt(cursor.getColumnIndex(HoroscopeText.TEXT_ID)));
+                horoscopeText.setHoroscopeID(cursor.getInt(cursor.getColumnIndex(HoroscopeText.HOROSCOPE_ID)));
+                horoscopeText.setTextDate(cursor.getString(cursor.getColumnIndex(HoroscopeText.TEXT_DATE)));
+                horoscopeText.setText(cursor.getString(cursor.getColumnIndex(HoroscopeText.TEXT)));
+                horoscopeText.setTextURL(cursor.getString(cursor.getColumnIndex(HoroscopeText.TEXT_URL)));
+
+                horoscopeTextList.add(horoscopeText);
+            }while (cursor.moveToNext());
+        }
+        cursor.close();
+        return horoscopeTextList;
+    }
+
     //add horoscope
     public void addHoroscopeText(ArrayList<HoroscopeText> horoscopeTexts){
         for(HoroscopeText horoscopeText : horoscopeTexts){

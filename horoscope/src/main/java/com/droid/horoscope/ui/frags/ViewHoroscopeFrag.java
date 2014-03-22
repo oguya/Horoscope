@@ -1,19 +1,36 @@
 package com.droid.horoscope.ui.frags;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.droid.horoscope.R;
+import com.droid.horoscope.constants.Constants;
+import com.droid.horoscope.db.DBAdapter;
+import com.droid.horoscope.model.HoroscopeText;
+import com.droid.horoscope.model.Horoscopes;
+import com.droid.horoscope.utils.Utils;
+
+import java.util.ArrayList;
 
 
 /**
@@ -24,10 +41,11 @@ public class ViewHoroscopeFrag extends Fragment {
     private Activity activity;
     private final String LOG_TAG = "ViewHoroscopeFrag";
 
-    private int horoscope;
-    private String[] horoscopeList;
+    private int horoscopeID;
+    private String[] horoscopeNameList;
 
     private ProgressBar scope_loading;
+    private ScrollView scroll_section;
     private TextView scope_date_txt;
     private ImageView vwh_img_thumbnail;
     private TextView vwh_horoscope_name;
@@ -35,8 +53,15 @@ public class ViewHoroscopeFrag extends Fragment {
     private TextView vwh_horoscope_txt;
     private Button btn_read_more;
 
-    public ViewHoroscopeFrag(int horoscope) {
-        this.horoscope = horoscope;
+    public DBAdapter dbAdapter;
+    public ArrayList<HoroscopeText> horoscopeTextList;
+    public ArrayList<Horoscopes> horoscopeDetails;
+    public String horoscopeDate;
+    public String scope_url;
+    public boolean LOADING=false;
+
+    public ViewHoroscopeFrag(int horoscopeID) {
+        this.horoscopeID = horoscopeID;
     }
 
     @Override
@@ -50,60 +75,161 @@ public class ViewHoroscopeFrag extends Fragment {
         View rootView = inflater.inflate(R.layout.frag_view_horoscope, container, false);
 
         //init ui here
-        scope_loading = (ProgressBar)rootView.findViewById(R.id.scope_loading);
-        scope_date_txt = (TextView)rootView.findViewById(R.id.vwh_date_txt);
-        vwh_img_thumbnail = (ImageView)rootView.findViewById(R.id.vwh_img_thumbnail);
-        vwh_horoscope_name = (TextView)rootView.findViewById(R.id.vwh_horoscope_name);
-        vwh_bday_txt = (TextView)rootView.findViewById(R.id.vwh_bday_txt);
-        vwh_horoscope_txt = (TextView)rootView.findViewById(R.id.vwh_horoscope_txt);
-        btn_read_more = (Button)rootView.findViewById(R.id.btn_read_more);
+        scope_loading = (ProgressBar) rootView.findViewById(R.id.scope_loading);
+        scroll_section = (ScrollView) rootView.findViewById(R.id.section_scroll);
+        scope_date_txt = (TextView) rootView.findViewById(R.id.vwh_date_txt);
+        vwh_img_thumbnail = (ImageView) rootView.findViewById(R.id.vwh_img_thumbnail);
+        vwh_horoscope_name = (TextView) rootView.findViewById(R.id.vwh_horoscope_name);
+        vwh_bday_txt = (TextView) rootView.findViewById(R.id.vwh_bday_txt);
+        vwh_horoscope_txt = (TextView) rootView.findViewById(R.id.vwh_horoscope_txt);
+        btn_read_more = (Button) rootView.findViewById(R.id.btn_read_more);
         btn_read_more.setOnClickListener(btnListener);
         return rootView;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        setHasOptionsMenu(true);
+
+        if(savedInstanceState != null){
+            LOADING = savedInstanceState.getBoolean(Constants.KEY_LOADING_STATE);
+        }
     }
 
     //change ui stuff..frag is live
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
+        horoscopeNameList = activity.getResources().getStringArray(R.array.nav_drawer_items);
 
-        horoscopeList = activity.getResources().getStringArray(R.array.nav_drawer_items);
+        dbAdapter = new DBAdapter(this.activity);
+        dbAdapter.open();
 
+        horoscopeDate = Utils.formatCurrentDate();
+        horoscopeTextList = dbAdapter.getHoroscopeText(horoscopeID, horoscopeDate);
+        horoscopeDetails = dbAdapter.getHoroscope(horoscopeID);
+
+        if (horoscopeTextList.size() <= 0) {
+            Log.e(LOG_TAG, "No horoscopes for date: " + horoscopeDate + ". Getting the lattest!");
+            horoscopeTextList = dbAdapter.getLatestHoroscopeText(horoscopeID);
+
+            //TODO fetch latest from Net
+        }
+
+        if (horoscopeTextList.size() <= 0) {
+            scope_loading.setVisibility(View.VISIBLE);
+            scroll_section.setVisibility(View.GONE);
+            LOADING = true;
+        } else {
+            setData();
+            LOADING = false;
+        }
+    }
+
+    private void setData() {
+        String scope_date = horoscopeTextList.get(0).getTextDate();
+        String scope_txt = horoscopeTextList.get(0).getText();
+        TypedArray imgs = activity.getResources().obtainTypedArray(R.array.nav_drawer_icons);
+        String scope_name = horoscopeNameList[horoscopeID];
+        String scope_bday = horoscopeDetails.get(0).getHoroscopeDate();
+        scope_url = horoscopeTextList.get(0).getTextURL();
+
+        scope_date_txt.setText(Utils.formatDisplayDate(scope_date));
+        vwh_img_thumbnail.setImageResource(imgs.getResourceId(horoscopeID, -1));
+        vwh_horoscope_name.setText(scope_name);
+        vwh_bday_txt.setText(scope_bday);
+        vwh_horoscope_txt.setText(scope_txt);
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
+        dbAdapter.open();
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
+        dbAdapter.close();
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState){
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(Constants.KEY_LOADING_STATE, LOADING);
         super.onSaveInstanceState(outState);
     }
 
-    public View.OnClickListener btnListener =  new View.OnClickListener() {
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.view_horoscope, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if(LOADING)
+            return super.onOptionsItemSelected(item);
+
+        switch (item.getItemId()) {
+            case R.id.action_datepicker: //open settings
+                createDatePicker();
+                break;
+            case R.id.action_share: //share url
+                startActivity(Intent.createChooser(getDefaultShareIntent(),
+                        "Share "+horoscopeNameList[horoscopeID]+" horoscope"));
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    protected Dialog createDatePicker() {
+        return new DatePickerDialog(activity, datePickerListener, 2014, 03, 21);
+    }
+
+    //datepicker dlglistener
+    private DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            String dateStr = year + "-" + monthOfYear + "-" + dayOfMonth;
+            Log.e(LOG_TAG, "DatePicker: " + dateStr);
+
+        }
+    };
+
+    public View.OnClickListener btnListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            switch (view.getId()){
+            switch (view.getId()) {
                 case R.id.btn_read_more: //open browser
-                    String url = "http://www.findyourfate.com/rss/daily-horoscopes-today.asp?sign=Aries";
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    startActivity(intent);
+                    if (scope_url != null) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(scope_url));
+                        startActivity(intent);
+                    } else {
+                        view.setEnabled(false);
+                    }
                     break;
 
-                default:break;
+                default:
+                    break;
             }
         }
     };
 
+    //share scope_url
+    private Intent getDefaultShareIntent() {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_TEXT, "Today's "+horoscopeNameList[horoscopeID]+" horoscope "+scope_url);
+        intent.setType("text/plain");
+        return intent;
+    }
 }

@@ -22,4 +22,5 @@ public class Constants {
 
     //Fragment position
     public static final String KEY_FRAG_POSITION = "FragmentPosition";
+    public static final String KEY_LOADING_STATE = "Loading";
 }
