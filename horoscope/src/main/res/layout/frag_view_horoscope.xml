@@ -31,7 +31,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-
                 <EditText
                     android:id="@+id/vwh_date_txt"
                     android:textSize="23sp"
@@ -140,7 +139,7 @@
             <!--footer section-->
             <TextView
                 android:text="@string/disclaimer"
-                android:textSize="15sp"
+                android:textSize="13sp"
                 android:layout_marginTop="20dp"
                 android:layout_marginLeft="5dp"
                 android:paddingBottom="5dp"
@@ -155,8 +154,5 @@
         </RelativeLayout>
 
     </ScrollView>
-
-
-
 
 </RelativeLayout>

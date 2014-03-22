@@ -9,6 +9,9 @@ import android.graphics.drawable.Drawable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by james on 21/03/14.
@@ -42,5 +45,21 @@ public class Utils {
         Drawable drawable = context.getResources().getDrawable(imageID);
         Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
         return new BitmapDrawable(context.getResources(), Bitmap.createScaledBitmap(bitmap, width, height, true));
+    }
+
+    //return date in format => 2014-03-22
+    public static String formatDate(String dateStr){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String retDate = "";
+        Date date = null;
+
+        try {
+            date = dateFormat.parse(dateStr);
+            retDate = dateFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return retDate;
     }
 }

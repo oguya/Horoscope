@@ -9,3 +9,6 @@
 
 #windows digital store
 .DS_Store
+
+#sql files
+*.sql
