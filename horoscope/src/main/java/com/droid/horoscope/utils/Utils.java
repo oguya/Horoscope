@@ -7,6 +7,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
+import org.joda.time.DateTime;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -111,5 +113,35 @@ public class Utils {
             dispDateStr = dateFormat.format(now);
         }
         return dispDateStr;
+    }
+
+    //datepicker:: get min date=>last yr Jan 1st
+    public static long getMinDate(){
+        DateTime dateTime = new DateTime();
+        int year = dateTime.getYear();
+
+        String dateStr = year+"-01-01";
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date minDate = null;
+
+        return new DateTime(year-1, 1, 1, 0, 0).getMillis();
+    }
+
+    //datepicker:: get max date=>Today
+    public static long getMaxDate(int year, int month, int day){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date now = null;
+        String dateStr = year+"-"+month+"-"+day;
+        try{
+            now = dateFormat.parse(dateStr);
+        }catch (ParseException ex){
+            Log.e("Utils", "exception in dateParse: "+ex.getMessage());
+            now = new Date();
+        }
+        return now.getTime();
+    }
+
+    public static long getMaxDate(){
+        return new DateTime().getMillis();
     }
 }

@@ -1,11 +1,13 @@
 package com.droid.horoscope.ui.frags;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -30,7 +32,12 @@ import com.droid.horoscope.model.HoroscopeText;
 import com.droid.horoscope.model.Horoscopes;
 import com.droid.horoscope.utils.Utils;
 
+import org.joda.time.DateTime;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 
 /**
@@ -59,6 +66,7 @@ public class ViewHoroscopeFrag extends Fragment {
     public String horoscopeDate;
     public String scope_url;
     public boolean LOADING=false;
+    public DateTime datePickerTime;
 
     public ViewHoroscopeFrag(int horoscopeID) {
         this.horoscopeID = horoscopeID;
@@ -175,7 +183,7 @@ public class ViewHoroscopeFrag extends Fragment {
 
         switch (item.getItemId()) {
             case R.id.action_datepicker: //open settings
-                createDatePicker();
+                createDatePicker().show();
                 break;
             case R.id.action_share: //share url
                 startActivity(Intent.createChooser(getDefaultShareIntent(),
@@ -192,17 +200,52 @@ public class ViewHoroscopeFrag extends Fragment {
         super.onPrepareOptionsMenu(menu);
     }
 
-    protected Dialog createDatePicker() {
-        return new DatePickerDialog(activity, datePickerListener, 2014, 03, 21);
+    protected DatePickerDialog createDatePicker() {
+        DateTime dateTime = new DateTime();
+
+        int year = dateTime.getYear();
+        int month = dateTime.getMonthOfYear();
+        int day = dateTime.getDayOfMonth();
+
+        DatePickerDialog datePickerDlg = new DatePickerDialog(activity, datePickerListener, year, month-1, day);
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            Log.d(LOG_TAG, "HoneyComb device...");
+            datePickerDlg.getDatePicker().setMaxDate(Utils.getMaxDate());
+            datePickerDlg.getDatePicker().setMinDate(Utils.getMinDate());
+        }
+
+        return datePickerDlg;
+    }
+
+    //process date for <= API 10
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
+    public void DatePicker_GB(){
+        if(datePickerTime != null){
+            DateTime maxDate = new DateTime(Utils.getMaxDate());
+            DateTime minDate = new DateTime(Utils.getMinDate());
+
+            //manually check the date
+            if(datePickerTime.getYear() < minDate.getYear() ||
+                    datePickerTime.getYear() > maxDate.getYear() ){
+                Toast.makeText(activity, "Please select a date between the year "+minDate.getYear()+
+                        " and "+maxDate.getYear(), Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     //datepicker dlglistener
     private DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            //month starts from 0 =>Jan & 11=>Dec
             String dateStr = year + "-" + monthOfYear + "-" + dayOfMonth;
+            datePickerTime = new DateTime(year, monthOfYear+1, dayOfMonth, 0, 0);
             Log.e(LOG_TAG, "DatePicker: " + dateStr);
 
+            if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1){
+                DatePicker_GB();
+            }
         }
     };
 
