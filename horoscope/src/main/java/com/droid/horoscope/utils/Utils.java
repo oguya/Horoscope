@@ -7,6 +7,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
+import com.droid.horoscope.model.Horoscopes;
+
 import org.joda.time.DateTime;
 
 import java.io.File;
@@ -14,6 +16,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -143,5 +146,31 @@ public class Utils {
 
     public static long getMaxDate(){
         return new DateTime().getMillis();
+    }
+
+    //get all horoscopes
+    public static ArrayList<Horoscopes> getHoroscopeDetails(){
+        ArrayList<Horoscopes> HoroscopesList = new ArrayList<Horoscopes>();
+
+        HoroscopesList.add(new Horoscopes(0, "Aries", null));
+        HoroscopesList.add(new Horoscopes(1, "Taurus", null));
+        HoroscopesList.add(new Horoscopes(2, "Gemini", null));
+        HoroscopesList.add(new Horoscopes(3, "Cancer", null));
+        HoroscopesList.add(new Horoscopes(4, "Leo", null));
+        HoroscopesList.add(new Horoscopes(5, "Virgo", null));
+        HoroscopesList.add(new Horoscopes(6, "Libra", null));
+        HoroscopesList.add(new Horoscopes(7, "Scorpio", null));
+        HoroscopesList.add(new Horoscopes(8, "Sagittarius", null));
+        HoroscopesList.add(new Horoscopes(9, "Capricorn", null));
+        HoroscopesList.add(new Horoscopes(10, "Aquarius", null));
+        HoroscopesList.add(new Horoscopes(11, "Pisces", null));
+
+        return HoroscopesList;
+    }
+
+    //get query date // => month/day/year => 3/26/2014
+    public static String getQueryDate(DateTime  dateTime){
+        String dateStr = dateTime.getMonthOfYear()+"/"+dateTime.getDayOfMonth()+"/"+dateTime.getYear();
+        return dateStr;
     }
 }

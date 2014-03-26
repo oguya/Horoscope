@@ -30,6 +30,7 @@ import com.droid.horoscope.constants.Constants;
 import com.droid.horoscope.db.DBAdapter;
 import com.droid.horoscope.model.HoroscopeText;
 import com.droid.horoscope.model.Horoscopes;
+import com.droid.horoscope.net.FetchHoroscopes;
 import com.droid.horoscope.utils.Utils;
 
 import org.joda.time.DateTime;
@@ -38,6 +39,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -246,6 +248,24 @@ public class ViewHoroscopeFrag extends Fragment {
             if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1){
                 DatePicker_GB();
             }
+
+            //fetch scopes
+            String queryDate = Utils.getQueryDate(datePickerTime);
+            String[] args = {queryDate};
+            ArrayList<HoroscopeText> horoscopeTexts = new ArrayList<HoroscopeText>();
+            new FetchHoroscopes().execute(args);
+
+            /*
+            try {
+                 horoscopeTexts = new FetchHoroscopes().execute(args).get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                Log.e(LOG_TAG, "Fetch interrupt: "+e.getMessage());
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+                Log.e(LOG_TAG, "execution exception: "+e.getMessage());
+            }
+            */
         }
     };
 
@@ -274,5 +294,17 @@ public class ViewHoroscopeFrag extends Fragment {
         intent.putExtra(Intent.EXTRA_TEXT, "Today's "+horoscopeNameList[horoscopeID]+" horoscope "+scope_url);
         intent.setType("text/plain");
         return intent;
+    }
+
+    //check for
+    public class FetchWrapper{
+
+        public FetchWrapper(){}
+
+        public ArrayList<HoroscopeText> getHoroscopes(int horoscopeID){
+            ArrayList<HoroscopeText> horoscopeTexts = new ArrayList<HoroscopeText>();
+
+            return horoscopeTexts;
+        }
     }
 }
