@@ -14,6 +14,7 @@ import org.joda.time.DateTime;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -171,6 +172,25 @@ public class Utils {
     //get query date // => month/day/year => 3/26/2014
     public static String getQueryDate(DateTime  dateTime){
         String dateStr = dateTime.getMonthOfYear()+"/"+dateTime.getDayOfMonth()+"/"+dateTime.getYear();
+        Log.e("Utils","queryDate: "+dateStr);
         return dateStr;
     }
+
+    //convert 3/26/2014 to 2014-03-26
+    public static String formatScopeDate(String queryDate){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        SimpleDateFormat scopeFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String dateStr;
+        try {
+            Date date = dateFormat.parse(queryDate);
+            dateStr = scopeFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Log.e("Utils","Exeception: "+e.getMessage());
+            dateStr = formatCurrentDate();
+        }
+        Log.e("Utils","scopeDate: "+dateStr);
+        return dateStr;
+    }
+
 }

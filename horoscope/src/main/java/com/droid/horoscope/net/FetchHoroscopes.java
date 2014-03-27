@@ -10,6 +10,8 @@ import com.droid.horoscope.model.Horoscopes;
 import com.droid.horoscope.utils.Utils;
 
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -27,6 +29,7 @@ import javax.xml.parsers.ParserConfigurationException;
 public class FetchHoroscopes extends AsyncTask<String, Integer, ArrayList<HoroscopeText>> {
 
     public static final String LOG_TAG = "FetchHoroscope";
+    private String dateStr;
 
     @Override
     protected void onPreExecute(){
@@ -36,6 +39,7 @@ public class FetchHoroscopes extends AsyncTask<String, Integer, ArrayList<Horosc
     @Override
     protected ArrayList<HoroscopeText> doInBackground(String... params) {
         String dateStr = params[0]; // => month/day/year => 3/26/2014
+        this.dateStr = Utils.formatScopeDate(dateStr);
         String xmlResponse = null;
         try{
             RestTemplate restTemplate = new RestTemplate();
@@ -74,13 +78,13 @@ public class FetchHoroscopes extends AsyncTask<String, Integer, ArrayList<Horosc
 
                 HoroscopeText horoscopeText = new HoroscopeText();
                 horoscopeText.setHoroscopeID(horoscopeID);
-                //TODO add text date in db
+                horoscopeText.setTextDate(dateStr);
                 horoscopeText.setText(description);
                 horoscopeText.setTextURL(link);
 
                 if(horoscopeID != -1){
                     horoscopeTextList.add(horoscopeText);
-//                    Log.e(LOG_TAG, "scope: "+title+" link: "+link+" desc: "+description);
+                    Log.e(LOG_TAG, "ID:"+horoscopeID+"scope: "+title+" link: "+link+" desc: "+description);
                 }
             }
         } catch (SAXException e) {

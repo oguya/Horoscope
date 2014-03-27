@@ -46,6 +46,7 @@
     <string name="img_content_desc">Image</string>
 
     <!--view horoscope frag-->
+    <string name="scope_no_net">Unable to connect to internet.\nPlease check your connection and try again.</string>
     <string name="action_datepicker">Pick Date</string>
     <string name="action_share">Share</string>
     <string name="vwh_date_lbl">Date</string>

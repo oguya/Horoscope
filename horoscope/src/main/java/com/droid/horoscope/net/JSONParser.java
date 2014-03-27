@@ -2,6 +2,7 @@ package com.droid.horoscope.net;
 
 import com.droid.horoscope.model.HoroscopeText;
 import com.droid.horoscope.model.Horoscopes;
+import com.droid.horoscope.utils.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,14 +27,12 @@ public class JSONParser {
 
     private String jsonStr;
     private String dateStr;
-    private ArrayList<Horoscopes> horoscopesDetails;
 
     public JSONParser(){}
 
-    public JSONParser(String jsonStr, String dateStr, ArrayList<Horoscopes> horoscopesDetails ){
+    public JSONParser(String jsonStr, String dateStr){
         this.jsonStr = jsonStr;
         this.dateStr = dateStr;
-        this.horoscopesDetails = horoscopesDetails;
     }
 
     public ArrayList<HoroscopeText> parseJSON() throws JSONException{
@@ -69,7 +68,7 @@ public class JSONParser {
 
     public int getHoroscopeID(String title){
         int horoscopeID = 0;
-        for(Horoscopes horoscope : horoscopesDetails){
+        for(Horoscopes horoscope : Utils.getHoroscopeDetails()){
             if(horoscope.getHoroscopeName().contains(title)){
                 horoscopeID = horoscope.getHoroscopeID();
             }

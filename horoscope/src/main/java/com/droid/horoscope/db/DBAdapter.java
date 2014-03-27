@@ -162,23 +162,47 @@ public class DBAdapter {
         return horoscopeTextList;
     }
 
+    //check if horoscope for date exists
+    public int checkHoroscopeForDate(int horoscopeID, String dateStr){
+        int rowCount = -1;
+
+        Cursor cursor = null;
+        String sql = "SELECT count(*) AS count FROM horoscope_text where horoscope_id = '" + horoscopeID+
+                "' AND text_date = '"+dateStr+"'";
+        Log.e(LOG_TAG, "SQL: "+sql);
+        try{
+            cursor = db.rawQuery(sql, null);
+        }catch (SQLiteException ex){
+            Log.e(LOG_TAG, "exception "+ex.getMessage());
+            return rowCount;
+        }
+
+        if(cursor.moveToFirst()){
+            rowCount = cursor.getInt(cursor.getColumnIndex("count"));
+            Log.e(LOG_TAG, "rowCount: "+rowCount);
+        }
+        cursor.close();
+        return rowCount;
+    }
+
     //add horoscope
     public void addHoroscopeText(ArrayList<HoroscopeText> horoscopeTexts){
+
         for(HoroscopeText horoscopeText : horoscopeTexts){
             ContentValues values = new ContentValues();
-            values.put(HoroscopeText.HOROSCOPE_ID, horoscopeText.getTextID());
+            values.put(HoroscopeText.HOROSCOPE_ID, horoscopeText.getHoroscopeID());
             values.put(HoroscopeText.TEXT_DATE, horoscopeText.getTextDate());
             values.put(HoroscopeText.TEXT, horoscopeText.getText());
             values.put(HoroscopeText.TEXT_URL, horoscopeText.getTextURL());
-
+            db.beginTransaction();
             try{
-                db.insert(Constants.TBL_HOROSCOPE_TEXT, null, values);
+                long id = db.insert(Constants.TBL_HOROSCOPE_TEXT, null, values);
+                Log.e(LOG_TAG, "new ID: "+horoscopeText.getHoroscopeID());
+                db.setTransactionSuccessful();
             }catch (SQLiteException ex){
-                db.endTransaction();
                 Log.e(LOG_TAG, "exception "+ex.getMessage());
             }
-
-            finally {
+            finally{
                 db.endTransaction();
             }
         }

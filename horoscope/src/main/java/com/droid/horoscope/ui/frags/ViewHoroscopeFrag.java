@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -61,6 +62,7 @@ public class ViewHoroscopeFrag extends Fragment {
     private TextView vwh_bday_txt;
     private TextView vwh_horoscope_txt;
     private Button btn_read_more;
+    private TextView scope_no_net;
 
     public DBAdapter dbAdapter;
     public ArrayList<HoroscopeText> horoscopeTextList;
@@ -68,10 +70,13 @@ public class ViewHoroscopeFrag extends Fragment {
     public String horoscopeDate;
     public String scope_url;
     public boolean LOADING=false;
+
     public DateTime datePickerTime;
+    public FetchWrapper fetchWrapper;
 
     public ViewHoroscopeFrag(int horoscopeID) {
         this.horoscopeID = horoscopeID;
+        this.horoscopeTextList = new ArrayList<HoroscopeText>();
     }
 
     @Override
@@ -85,6 +90,7 @@ public class ViewHoroscopeFrag extends Fragment {
         View rootView = inflater.inflate(R.layout.frag_view_horoscope, container, false);
 
         //init ui here
+        scope_no_net = (TextView) rootView.findViewById(R.id.scope_no_net);
         scope_loading = (ProgressBar) rootView.findViewById(R.id.scope_loading);
         scroll_section = (ScrollView) rootView.findViewById(R.id.section_scroll);
         scope_date_txt = (TextView) rootView.findViewById(R.id.vwh_date_txt);
@@ -117,15 +123,15 @@ public class ViewHoroscopeFrag extends Fragment {
         dbAdapter = new DBAdapter(this.activity);
         dbAdapter.open();
 
+        fetchWrapper = new FetchWrapper();
+
         horoscopeDate = Utils.formatCurrentDate();
-        horoscopeTextList = dbAdapter.getHoroscopeText(horoscopeID, horoscopeDate);
+        horoscopeTextList = fetchWrapper.getHoroscopes(horoscopeID, horoscopeDate);
         horoscopeDetails = dbAdapter.getHoroscope(horoscopeID);
 
         if (horoscopeTextList.size() <= 0) {
             Log.e(LOG_TAG, "No horoscopes for date: " + horoscopeDate + ". Getting the lattest!");
             horoscopeTextList = dbAdapter.getLatestHoroscopeText(horoscopeID);
-
-            //TODO fetch latest from Net
         }
 
         if (horoscopeTextList.size() <= 0) {
@@ -139,6 +145,14 @@ public class ViewHoroscopeFrag extends Fragment {
     }
 
     private void setData() {
+
+        //first run..no data
+        if(horoscopeTextList.size() <= 0){
+            scope_no_net.setVisibility(View.VISIBLE);
+            scroll_section.setVisibility(View.GONE);
+            return;
+        }
+
         String scope_date = horoscopeTextList.get(0).getTextDate();
         String scope_txt = horoscopeTextList.get(0).getText();
         TypedArray imgs = activity.getResources().obtainTypedArray(R.array.nav_drawer_icons);
@@ -249,11 +263,10 @@ public class ViewHoroscopeFrag extends Fragment {
                 DatePicker_GB();
             }
 
-            //fetch scopes
+            //dl rss
             String queryDate = Utils.getQueryDate(datePickerTime);
             String[] args = {queryDate};
-            ArrayList<HoroscopeText> horoscopeTexts = new ArrayList<HoroscopeText>();
-            new FetchHoroscopes().execute(args);
+            new GetRSS().execute(args);
 
             /*
             try {
@@ -301,10 +314,71 @@ public class ViewHoroscopeFrag extends Fragment {
 
         public FetchWrapper(){}
 
-        public ArrayList<HoroscopeText> getHoroscopes(int horoscopeID){
+        public ArrayList<HoroscopeText> getHoroscopes(int horoscopeID, String scopeDate){
             ArrayList<HoroscopeText> horoscopeTexts = new ArrayList<HoroscopeText>();
 
+            if(dbAdapter.checkHoroscopeForDate(horoscopeID, scopeDate) > 0){
+                horoscopeTexts = dbAdapter.getHoroscopeText(horoscopeID, scopeDate);
+            }else{
+                //dl from net
+                Log.e(LOG_TAG, "fetching horoscopes for date: " + horoscopeDate);
+                String queryDate = null;
+                if(datePickerTime == null){
+                    DateTime dateTime = new DateTime();
+                    queryDate = Utils.getQueryDate(dateTime);
+                }else
+                    queryDate = Utils.getQueryDate(datePickerTime);
+
+                String[] args = {queryDate, horoscopeNameList[horoscopeID]};
+                new GetRSS().execute(args);
+            }
+
             return horoscopeTexts;
+        }
+
+    }
+
+    public class GetRSS extends FetchHoroscopes{
+
+        @Override
+        protected void onPreExecute(){
+            super.onPreExecute();
+
+            LOADING = true;
+            scope_loading.setVisibility(View.VISIBLE);
+            scroll_section.setVisibility(View.GONE);
+        }
+
+
+        protected ArrayList<HoroscopeText> doInBackground(String... params){
+            ArrayList<HoroscopeText> horoscopeText = super.doInBackground(params);
+
+            return horoscopeText;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<HoroscopeText> results){
+            super.onPostExecute(results);
+
+            if(results == null) {
+                Log.e(LOG_TAG, "List emptyy");
+                Toast.makeText(activity, "Unable to connect to the internet!", Toast.LENGTH_LONG).show();
+                horoscopeTextList = dbAdapter.getLatestHoroscopeText(horoscopeID);
+                setData();
+                LOADING = false;
+                scope_loading.setVisibility(View.GONE);
+                scroll_section.setVisibility(View.VISIBLE);
+                return;
+            }
+            //add to db
+            dbAdapter.addHoroscopeText(results);
+            horoscopeTextList = dbAdapter.getLatestHoroscopeText(horoscopeID);
+            Log.e(LOG_TAG, "changing views");
+            setData();
+
+            LOADING = false;
+            scope_loading.setVisibility(View.GONE);
+            scroll_section.setVisibility(View.VISIBLE);
         }
     }
 }
