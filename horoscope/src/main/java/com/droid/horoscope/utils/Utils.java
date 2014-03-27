@@ -17,8 +17,10 @@ import java.io.FileNotFoundException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.SortedMap;
 
 /**
  * Created by james on 21/03/14.
@@ -174,6 +176,39 @@ public class Utils {
         String dateStr = dateTime.getMonthOfYear()+"/"+dateTime.getDayOfMonth()+"/"+dateTime.getYear();
         Log.e("Utils","queryDate: "+dateStr);
         return dateStr;
+    }
+
+    public static String getQueryDate(String dateStr){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date qDate;
+        SimpleDateFormat qformat = new SimpleDateFormat("M/dd/yyyy");
+        String queryDate;
+
+        try {
+            qDate = simpleDateFormat.parse(dateStr);
+            queryDate = qformat.format(qDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            queryDate = qformat.format(new Date());
+        }
+        Log.e("Utils", "Query Date: "+queryDate);
+        return queryDate;
+    }
+
+    public static String formatDBDate(String dateStr){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-M-dd");
+        Date date;
+        SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+        String dbDateStr;
+
+        try {
+            date = dateFormat.parse(dateStr);
+            dbDateStr = dateFormat2.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            dbDateStr = dateFormat2.format(new Date());
+        }
+        return dbDateStr;
     }
 
     //convert 3/26/2014 to 2014-03-26

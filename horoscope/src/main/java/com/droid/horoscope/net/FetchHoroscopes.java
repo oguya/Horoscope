@@ -46,7 +46,7 @@ public class FetchHoroscopes extends AsyncTask<String, Integer, ArrayList<Horosc
             restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
             xmlResponse = restTemplate.getForObject(Constants.HOROSCOPE_RSS_URL, String.class, dateStr);
 
-            Log.d(LOG_TAG, "Got Response size: "+xmlResponse.length());
+            Log.e(LOG_TAG, "Got Response size: "+xmlResponse.length()+" data: "+xmlResponse);
             parseResult(xmlResponse);
         }catch (Exception ex){
             ex.printStackTrace();

@@ -125,9 +125,9 @@ public class ViewHoroscopeFrag extends Fragment {
 
         fetchWrapper = new FetchWrapper();
 
+        horoscopeDetails = dbAdapter.getHoroscope(horoscopeID);
         horoscopeDate = Utils.formatCurrentDate();
         horoscopeTextList = fetchWrapper.getHoroscopes(horoscopeID, horoscopeDate);
-        horoscopeDetails = dbAdapter.getHoroscope(horoscopeID);
 
         if (horoscopeTextList.size() <= 0) {
             Log.e(LOG_TAG, "No horoscopes for date: " + horoscopeDate + ". Getting the lattest!");
@@ -148,11 +148,12 @@ public class ViewHoroscopeFrag extends Fragment {
 
         //first run..no data
         if(horoscopeTextList.size() <= 0){
+            Log.e(LOG_TAG, "scope List empty!");
             scope_no_net.setVisibility(View.VISIBLE);
             scroll_section.setVisibility(View.GONE);
             return;
         }
-
+        Log.e(LOG_TAG, "changing Data: scopeID: "+horoscopeID+" Date: "+horoscopeDate);
         String scope_date = horoscopeTextList.get(0).getTextDate();
         String scope_txt = horoscopeTextList.get(0).getText();
         TypedArray imgs = activity.getResources().obtainTypedArray(R.array.nav_drawer_icons);
@@ -255,30 +256,18 @@ public class ViewHoroscopeFrag extends Fragment {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
             //month starts from 0 =>Jan & 11=>Dec
-            String dateStr = year + "-" + monthOfYear + "-" + dayOfMonth;
+            String dateStr = year + "-" + (monthOfYear+1) + "-" + dayOfMonth;
             datePickerTime = new DateTime(year, monthOfYear+1, dayOfMonth, 0, 0);
-            Log.e(LOG_TAG, "DatePicker: " + dateStr);
+            horoscopeDate = year + "-" + (monthOfYear+1)+ "-" + dayOfMonth;
+            horoscopeDate = Utils.formatDBDate(horoscopeDate);
+            Log.e(LOG_TAG, "DatePicker: " + dateStr+" scopeDate: "+horoscopeDate);
 
             if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1){
                 DatePicker_GB();
             }
 
             //dl rss
-            String queryDate = Utils.getQueryDate(datePickerTime);
-            String[] args = {queryDate};
-            new GetRSS().execute(args);
-
-            /*
-            try {
-                 horoscopeTexts = new FetchHoroscopes().execute(args).get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                Log.e(LOG_TAG, "Fetch interrupt: "+e.getMessage());
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-                Log.e(LOG_TAG, "execution exception: "+e.getMessage());
-            }
-            */
+            horoscopeTextList = fetchWrapper.getHoroscopes(horoscopeID, horoscopeDate);
         }
     };
 
@@ -319,15 +308,12 @@ public class ViewHoroscopeFrag extends Fragment {
 
             if(dbAdapter.checkHoroscopeForDate(horoscopeID, scopeDate) > 0){
                 horoscopeTexts = dbAdapter.getHoroscopeText(horoscopeID, scopeDate);
+                horoscopeTextList = horoscopeTexts;
+                setData();
             }else{
                 //dl from net
-                Log.e(LOG_TAG, "fetching horoscopes for date: " + horoscopeDate);
-                String queryDate = null;
-                if(datePickerTime == null){
-                    DateTime dateTime = new DateTime();
-                    queryDate = Utils.getQueryDate(dateTime);
-                }else
-                    queryDate = Utils.getQueryDate(datePickerTime);
+                Log.e(LOG_TAG, "fetching horoscopes for date: " + scopeDate);
+                String queryDate = Utils.getQueryDate(scopeDate);
 
                 String[] args = {queryDate, horoscopeNameList[horoscopeID]};
                 new GetRSS().execute(args);
@@ -347,6 +333,7 @@ public class ViewHoroscopeFrag extends Fragment {
             LOADING = true;
             scope_loading.setVisibility(View.VISIBLE);
             scroll_section.setVisibility(View.GONE);
+            scope_no_net.setVisibility(View.GONE);
         }
 
 
@@ -372,7 +359,8 @@ public class ViewHoroscopeFrag extends Fragment {
             }
             //add to db
             dbAdapter.addHoroscopeText(results);
-            horoscopeTextList = dbAdapter.getLatestHoroscopeText(horoscopeID);
+//            horoscopeTextList = dbAdapter.getLatestHoroscopeText(horoscopeID);
+            horoscopeTextList = dbAdapter.getHoroscopeText(horoscopeID, horoscopeDate);
             Log.e(LOG_TAG, "changing views");
             setData();
 
