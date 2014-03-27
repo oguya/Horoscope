@@ -100,6 +100,8 @@ public class ViewHoroscopeFrag extends Fragment {
         vwh_horoscope_txt = (TextView) rootView.findViewById(R.id.vwh_horoscope_txt);
         btn_read_more = (Button) rootView.findViewById(R.id.btn_read_more);
         btn_read_more.setOnClickListener(btnListener);
+        btn_read_more.requestFocus();
+
         return rootView;
     }
 
@@ -149,23 +151,29 @@ public class ViewHoroscopeFrag extends Fragment {
         //first run..no data
         if(horoscopeTextList.size() <= 0){
             Log.e(LOG_TAG, "scope List empty!");
+
             scope_no_net.setVisibility(View.VISIBLE);
+            scope_loading.setVisibility(View.VISIBLE);
             scroll_section.setVisibility(View.GONE);
             return;
-        }
-        Log.e(LOG_TAG, "changing Data: scopeID: "+horoscopeID+" Date: "+horoscopeDate);
-        String scope_date = horoscopeTextList.get(0).getTextDate();
-        String scope_txt = horoscopeTextList.get(0).getText();
-        TypedArray imgs = activity.getResources().obtainTypedArray(R.array.nav_drawer_icons);
-        String scope_name = horoscopeNameList[horoscopeID];
-        String scope_bday = horoscopeDetails.get(0).getHoroscopeDate();
-        scope_url = horoscopeTextList.get(0).getTextURL();
+        }else {
 
-        scope_date_txt.setText(Utils.formatDisplayDate(scope_date));
-        vwh_img_thumbnail.setImageResource(imgs.getResourceId(horoscopeID, -1));
-        vwh_horoscope_name.setText(scope_name);
-        vwh_bday_txt.setText(scope_bday);
-        vwh_horoscope_txt.setText(scope_txt);
+            Log.e(LOG_TAG, "changing Data: scopeID: " + horoscopeID + " Date: " + horoscopeDate);
+            String scope_date = horoscopeTextList.get(0).getTextDate();
+            String scope_txt = horoscopeTextList.get(0).getText();
+            TypedArray imgs = activity.getResources().obtainTypedArray(R.array.nav_drawer_icons);
+            String scope_name = horoscopeNameList[horoscopeID];
+            String scope_bday = horoscopeDetails.get(0).getHoroscopeDate();
+            scope_url = horoscopeTextList.get(0).getTextURL();
+
+            scope_date_txt.setText(Utils.formatDisplayDate(scope_date));
+            vwh_img_thumbnail.setImageResource(imgs.getResourceId(horoscopeID, -1));
+            vwh_horoscope_name.setText(scope_name);
+            vwh_bday_txt.setText(scope_bday);
+            vwh_horoscope_txt.setText(scope_txt);
+        }
+
+        scroll_section.fullScroll(View.FOCUS_DOWN);
     }
 
     @Override
@@ -321,7 +329,6 @@ public class ViewHoroscopeFrag extends Fragment {
 
             return horoscopeTexts;
         }
-
     }
 
     public class GetRSS extends FetchHoroscopes{
@@ -335,7 +342,6 @@ public class ViewHoroscopeFrag extends Fragment {
             scroll_section.setVisibility(View.GONE);
             scope_no_net.setVisibility(View.GONE);
         }
-
 
         protected ArrayList<HoroscopeText> doInBackground(String... params){
             ArrayList<HoroscopeText> horoscopeText = super.doInBackground(params);
@@ -353,8 +359,9 @@ public class ViewHoroscopeFrag extends Fragment {
                 horoscopeTextList = dbAdapter.getLatestHoroscopeText(horoscopeID);
                 setData();
                 LOADING = false;
+                Log.e(LOG_TAG, "data size: "+horoscopeTextList.size());
                 scope_loading.setVisibility(View.GONE);
-                scroll_section.setVisibility(View.VISIBLE);
+//                scroll_section.setVisibility(View.VISIBLE);
                 return;
             }
             //add to db

@@ -28,18 +28,18 @@
 
     <!-- drawer item icons -->
     <string-array name="nav_drawer_icons">
-        <item>@drawable/aries</item>
-        <item>@drawable/taurus</item>
-        <item>@drawable/gemini</item>
-        <item>@drawable/cancer</item>
-        <item>@drawable/leo</item>
-        <item>@drawable/virgo</item>
-        <item>@drawable/libra</item>
-        <item>@drawable/scorpio</item>
-        <item>@drawable/sagittarius</item>
-        <item>@drawable/capricorn</item>
-        <item>@drawable/aquarius</item>
-        <item>@drawable/pisces</item>
+        <item>@drawable/aries_icon</item>
+        <item>@drawable/taurus_icon</item>
+        <item>@drawable/gemini_icon</item>
+        <item>@drawable/cancer_icon</item>
+        <item>@drawable/leo_icon</item>
+        <item>@drawable/virgo_icon</item>
+        <item>@drawable/libra_icon</item>
+        <item>@drawable/scorpio_icon</item>
+        <item>@drawable/sagittarius_icon</item>
+        <item>@drawable/capricorn_icon</item>
+        <item>@drawable/aquarius_icon</item>
+        <item>@drawable/pisces_icon</item>
     </string-array>
 
     <!-- img content desc -->
@@ -53,7 +53,7 @@
     <string name="vwh_date_txt">Friday, 21 March, 2014</string>
     <string name="vwh_horoscope_lbl">Aries</string>
     <string name="vwh_bday_lbl">March 21 - April 19</string>
-    <string name="vwh_horoscope_txt">Life exceeds your dreams later today. At the moment there`s no difference between who you are and what you want. Luckily for you, intense desires are likely to be fulfilled. The question is whether you`ll be satisfied or if you`ll still want more. Resist the temptation to be greedier than is necessary. If you have the world, don`t ask for the Universe. Try spreading a bit of your wealth around, Taurus.</string>
+    <string name="vwh_horoscope_txt">scope_text</string>
     <string name="btn_read_more_lbl">Read More</string>
     <string name="disclaimer">Horoscopes provided by www.findyourfate.com</string>
 

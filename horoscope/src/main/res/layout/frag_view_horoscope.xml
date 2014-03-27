@@ -62,7 +62,7 @@
 
                 <ImageView
                     android:id="@+id/vwh_img_thumbnail"
-                    android:src="@drawable/sagittarius"
+                    android:src="@drawable/aries_icon"
                     android:contentDescription="@string/img_content_desc"
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
